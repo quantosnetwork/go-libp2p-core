@@ -1,3 +1,6 @@
+## THIS BRANCH IS A QUANTOS EXPERIMENTATION FOR PORTING PART OF LIBP2P TO POST-QUANTUM KYBER-CRYSTAL KEYS AND SHNORR SIGNATURES
+
+
 # go-libp2p-core
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](https://protocol.ai)
