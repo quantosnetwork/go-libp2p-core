@@ -1,4 +1,4 @@
-module github.com/libp2p/go-libp2p-core
+module github.com/quantosnetwork/quantos-kyber-schnorr-go-libp2p-core
 
 go 1.16
 
