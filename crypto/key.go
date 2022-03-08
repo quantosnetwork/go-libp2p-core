@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"io"
 
-	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
+	pb "github.com/quantosnetwork/quantos-kyber-schnorr-go-libp2p-core/crypto/pb"
 
 	"github.com/gogo/protobuf/proto"
 )
@@ -26,6 +26,7 @@ const (
 	Secp256k1
 	// ECDSA is an enum for the supported ECDSA key type
 	ECDSA
+	KYBER
 )
 
 var (
@@ -37,6 +38,7 @@ var (
 		Ed25519,
 		Secp256k1,
 		ECDSA,
+		KYBER,
 	}
 )
 
@@ -52,6 +54,7 @@ var PubKeyUnmarshallers = map[pb.KeyType]PubKeyUnmarshaller{
 	pb.KeyType_Ed25519:   UnmarshalEd25519PublicKey,
 	pb.KeyType_Secp256k1: UnmarshalSecp256k1PublicKey,
 	pb.KeyType_ECDSA:     UnmarshalECDSAPublicKey,
+	pb.KeyType_KYBER:     UnmarshalKyberPublicKey,
 }
 
 // PrivKeyUnmarshallers is a map of unmarshallers by key type
@@ -60,6 +63,7 @@ var PrivKeyUnmarshallers = map[pb.KeyType]PrivKeyUnmarshaller{
 	pb.KeyType_Ed25519:   UnmarshalEd25519PrivateKey,
 	pb.KeyType_Secp256k1: UnmarshalSecp256k1PrivateKey,
 	pb.KeyType_ECDSA:     UnmarshalECDSAPrivateKey,
+	pb.KeyType_KYBER:     UnmarshalKyberPrivateKey,
 }
 
 // Key represents a crypto key that can be compared to another key
@@ -101,7 +105,13 @@ type GenSharedKey func([]byte) ([]byte, error)
 
 // GenerateKeyPair generates a private and public key
 func GenerateKeyPair(typ, bits int) (PrivKey, PubKey, error) {
-	return GenerateKeyPairWithReader(typ, bits, rand.Reader)
+	switch typ {
+	case KYBER:
+		return GenerateKyberEd25519Blake2Key()
+	default:
+		return GenerateKeyPairWithReader(typ, bits, rand.Reader)
+
+	}
 }
 
 // GenerateKeyPairWithReader returns a keypair of the given type and bitsize
@@ -115,6 +125,8 @@ func GenerateKeyPairWithReader(typ, bits int, src io.Reader) (PrivKey, PubKey, e
 		return GenerateSecp256k1Key(src)
 	case ECDSA:
 		return GenerateECDSAKeyPair(src)
+	case KYBER:
+		return GenerateKyberEd25519Blake2Key()
 	default:
 		return nil, nil, ErrBadKeyType
 	}

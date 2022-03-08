@@ -1,2 +1,5 @@
 *.swp
 tools/bin/
+.idea/modules.xml
+.idea/quantos-kyber-schnorr-go-libp2p-core.iml
+.idea/vcs.xml
